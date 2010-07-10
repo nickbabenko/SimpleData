@@ -44,6 +44,13 @@
 		D3D7D87D107C45EA00690C20 /* NSMutableArray.m in Sources */ = {isa = PBXBuildFile; fileRef = D3D7D87C107C45EA00690C20 /* NSMutableArray.m */; };
 		D3D7D87E107C45EA00690C20 /* NSMutableArray.m in Sources */ = {isa = PBXBuildFile; fileRef = D3D7D87C107C45EA00690C20 /* NSMutableArray.m */; };
 		D3E864F11077DCE40079694D /* SimpleStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D3E864F01077DCE40079694D /* SimpleStore.m */; };
+		FED23AF211E7EFC5007AAF8A /* SimpleStore.m in Sources */ = {isa = PBXBuildFile; fileRef = D3E864F01077DCE40079694D /* SimpleStore.m */; };
+		FED23AF411E7EFC5007AAF8A /* SDTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D30234D41077FDF300EDF004 /* SDTableViewController.m */; };
+		FED23AF611E7EFC5007AAF8A /* SimpleModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D30234E9107817D500EDF004 /* SimpleModel.m */; };
+		FED23AF811E7EFC5007AAF8A /* NSString.m in Sources */ = {isa = PBXBuildFile; fileRef = D3874FC2107867FD00F290C2 /* NSString.m */; };
+		FED23AFA11E7EFC5007AAF8A /* UIApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = D3CA0B571079BAF100BBF55F /* UIApplication.m */; };
+		FED23AFC11E7EFC5007AAF8A /* NSObject.m in Sources */ = {isa = PBXBuildFile; fileRef = D315AD4E107B00CF00A3897D /* NSObject.m */; };
+		FED23AFE11E7EFC5007AAF8A /* NSMutableArray.m in Sources */ = {isa = PBXBuildFile; fileRef = D3D7D87C107C45EA00690C20 /* NSMutableArray.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -323,6 +330,7 @@
 		D3D7D87C107C45EA00690C20 /* NSMutableArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSMutableArray.m; sourceTree = "<group>"; };
 		D3E864EF1077DCE40079694D /* SimpleStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleStore.h; sourceTree = "<group>"; };
 		D3E864F01077DCE40079694D /* SimpleStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleStore.m; sourceTree = "<group>"; };
+		FED23AEE11E7EFB1007AAF8A /* libSimpleData.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSimpleData.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -348,6 +356,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FED23AEC11E7EFB1007AAF8A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -369,6 +384,7 @@
 			children = (
 				1D6058910D05DD3D006BFB54 /* SimpleData.app */,
 				D387529410793D8000F290C2 /* Test.app */,
+				FED23AEE11E7EFB1007AAF8A /* libSimpleData.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -788,10 +804,20 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		FED23AEA11E7EFB1007AAF8A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* SimpleData */ = {
+		1D6058900D05DD3D006BFB54 /* SimpleDataApp */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "SimpleData" */;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "SimpleDataApp" */;
 			buildPhases = (
 				1D60588D0D05DD3D006BFB54 /* Resources */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
@@ -801,7 +827,7 @@
 			);
 			dependencies = (
 			);
-			name = SimpleData;
+			name = SimpleDataApp;
 			productName = SimpleData;
 			productReference = 1D6058910D05DD3D006BFB54 /* SimpleData.app */;
 			productType = "com.apple.product-type.application";
@@ -824,6 +850,23 @@
 			productName = Test;
 			productReference = D387529410793D8000F290C2 /* Test.app */;
 			productType = "com.apple.product-type.application";
+		};
+		FED23AED11E7EFB1007AAF8A /* SimpleData */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FED23B1F11E7EFE3007AAF8A /* Build configuration list for PBXNativeTarget "SimpleData" */;
+			buildPhases = (
+				FED23AEA11E7EFB1007AAF8A /* Headers */,
+				FED23AEB11E7EFB1007AAF8A /* Sources */,
+				FED23AEC11E7EFB1007AAF8A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SimpleData;
+			productName = SimpleData;
+			productReference = FED23AEE11E7EFB1007AAF8A /* libSimpleData.a */;
+			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
 
@@ -854,8 +897,9 @@
 			);
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* SimpleData */,
+				1D6058900D05DD3D006BFB54 /* SimpleDataApp */,
 				D387529310793D8000F290C2 /* Test */,
+				FED23AED11E7EFB1007AAF8A /* SimpleData */,
 			);
 		};
 /* End PBXProject section */
@@ -982,12 +1026,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FED23AEB11E7EFB1007AAF8A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FED23AF211E7EFC5007AAF8A /* SimpleStore.m in Sources */,
+				FED23AF411E7EFC5007AAF8A /* SDTableViewController.m in Sources */,
+				FED23AF611E7EFC5007AAF8A /* SimpleModel.m in Sources */,
+				FED23AF811E7EFC5007AAF8A /* NSString.m in Sources */,
+				FED23AFA11E7EFC5007AAF8A /* UIApplication.m in Sources */,
+				FED23AFC11E7EFC5007AAF8A /* NSObject.m in Sources */,
+				FED23AFE11E7EFC5007AAF8A /* NSMutableArray.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
 		D387529B10793D8F00F290C2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1D6058900D05DD3D006BFB54 /* SimpleData */;
+			target = 1D6058900D05DD3D006BFB54 /* SimpleDataApp */;
 			targetProxy = D387529A10793D8F00F290C2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1039,7 +1097,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = iphoneos3.1;
+				SDKROOT = iphoneos4.0;
 			};
 			name = Debug;
 		};
@@ -1052,7 +1110,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = iphoneos3.1;
+				SDKROOT = iphoneos4.0;
 			};
 			name = Release;
 		};
@@ -1105,10 +1163,37 @@
 			};
 			name = Release;
 		};
+		FED23AEF11E7EFB2007AAF8A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREFIX_HEADER = SimpleData_Prefix.pch;
+				PREBINDING = NO;
+				PRODUCT_NAME = SimpleData;
+			};
+			name = Debug;
+		};
+		FED23AF011E7EFB2007AAF8A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PREFIX_HEADER = SimpleData_Prefix.pch;
+				PREBINDING = NO;
+				PRODUCT_NAME = SimpleData;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "SimpleData" */ = {
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "SimpleDataApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
@@ -1131,6 +1216,15 @@
 			buildConfigurations = (
 				D387529710793D8100F290C2 /* Debug */,
 				D387529810793D8100F290C2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FED23B1F11E7EFE3007AAF8A /* Build configuration list for PBXNativeTarget "SimpleData" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FED23AEF11E7EFB2007AAF8A /* Debug */,
+				FED23AF011E7EFB2007AAF8A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
