@@ -10,6 +10,7 @@
 #import <CoreData/CoreData.h>
 
 #define SIMPLE_STORE_KEY @"SimpleStore"
+#define SIMPLE_STORE ((SimpleStore *)[SimpleStore currentStore])
 
 @interface SimpleStore : NSObject {
 	NSManagedObjectModel *managedObjectModel;
