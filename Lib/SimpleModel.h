@@ -18,5 +18,5 @@
 + (id)findWithPredicate:(NSPredicate *)predicate limit:(NSUInteger)limit sortBy:(NSMutableArray *)sortCol;
 + (void)forwardInvocation:(NSInvocation *)invocation;
 - (BOOL)save;
-
+- (void)setAttributes:(NSDictionary *)attributes;
 @end

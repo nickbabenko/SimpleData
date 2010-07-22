@@ -38,6 +38,11 @@
 }
 
 
+- (void)setAttributes:(NSDictionary *)attributes {
+    [self setValuesForKeysWithDictionary:attributes];
+}
+
+
 + (id)find:(id)obj inColumn:(NSString *)col {
 	NSArray *result = [self findWithPredicate: [NSPredicate predicateWithFormat:
 												[NSString stringWithFormat:@"%@ = %%@", col], obj]

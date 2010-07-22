@@ -638,7 +638,7 @@
 				D387539D10793ED700F290C2 /* GoogleToolboxForMac.framework */,
 				D387539F10793ED700F290C2 /* UnitTest - AppKit.octest */,
 				D38753A110793ED700F290C2 /* UnitTest - Foundation.octest */,
-				D38753A310793ED700F290C2 /* UnitTest - UnitTesting.octest */,
+				D38753A310793ED700F290C2 /* UnitTest - UnitTesting.bundle */,
 				D38753A510793ED700F290C2 /* GTMUIUnitTestingHarness.app */,
 			);
 			name = Products;
@@ -926,10 +926,10 @@
 			remoteRef = D38753A010793ED700F290C2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		D38753A310793ED700F290C2 /* UnitTest - UnitTesting.octest */ = {
+		D38753A310793ED700F290C2 /* UnitTest - UnitTesting.bundle */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = "UnitTest - UnitTesting.octest";
+			path = "UnitTest - UnitTesting.bundle";
 			remoteRef = D38753A210793ED700F290C2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
