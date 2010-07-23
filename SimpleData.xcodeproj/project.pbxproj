@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -638,7 +638,7 @@
 				D387539D10793ED700F290C2 /* GoogleToolboxForMac.framework */,
 				D387539F10793ED700F290C2 /* UnitTest - AppKit.octest */,
 				D38753A110793ED700F290C2 /* UnitTest - Foundation.octest */,
-				D38753A310793ED700F290C2 /* UnitTest - UnitTesting.bundle */,
+				D38753A310793ED700F290C2 /* UnitTest - UnitTesting.octest */,
 				D38753A510793ED700F290C2 /* GTMUIUnitTestingHarness.app */,
 			);
 			name = Products;
@@ -874,7 +874,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "SimpleData" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
@@ -926,10 +926,10 @@
 			remoteRef = D38753A010793ED700F290C2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		D38753A310793ED700F290C2 /* UnitTest - UnitTesting.bundle */ = {
+		D38753A310793ED700F290C2 /* UnitTest - UnitTesting.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = "UnitTest - UnitTesting.bundle";
+			path = "UnitTest - UnitTesting.octest";
 			remoteRef = D38753A210793ED700F290C2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
