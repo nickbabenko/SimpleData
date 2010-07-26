@@ -10,7 +10,7 @@
 
 
 @implementation SDTableViewController
-@synthesize fetchedResultsController, store, modelName, sortBy;
+@synthesize fetchedResultsController, store, modelName, sortBy, managedObjectContext;
 
 
 - (void)viewDidLoad {
