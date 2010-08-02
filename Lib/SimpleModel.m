@@ -27,6 +27,12 @@
 }
 
 
+- (BOOL)deleteObject {
+	[[[SimpleStore currentStore] managedObjectContext] deleteObject:self];
+    return [self save];
+}
+
+
 + (id)createWithAttributes:(NSDictionary *)attributes {
 	id obj = [[self alloc] initWithEntity:[NSEntityDescription entityForName:self.description
 													  inManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]] 
