@@ -33,6 +33,16 @@
 }
 
 
++ (BOOL)deleteAllObjects {
+    NSArray *objects = [self findAll];
+    NSManagedObjectContext *moc = [[SimpleStore currentStore] managedObjectContext];
+    for (NSManagedObject *object in objects) {
+        [moc deleteObject:object];
+    }
+    return [[SimpleStore currentStore] save];
+}
+
+
 + (id)createWithAttributes:(NSDictionary *)attributes {
 	id obj = [[self alloc] initWithEntity:[NSEntityDescription entityForName:self.description
 													  inManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]] 
