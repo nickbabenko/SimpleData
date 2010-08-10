@@ -19,6 +19,6 @@
 + (void)forwardInvocation:(NSInvocation *)invocation;
 - (BOOL)save;
 - (BOOL)deleteObject;
-- (BOOL)deleteAllObjects;
++ (BOOL)deleteAllObjects;
 - (void)setAttributes:(NSDictionary *)attributes;
 @end
