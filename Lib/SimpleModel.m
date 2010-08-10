@@ -27,6 +27,12 @@
 }
 
 
+- (void)deleteObjectAndSave:(BOOL)save {
+	[[[SimpleStore currentStore] managedObjectContext] deleteObject:self];
+    if (save) [self save];
+}
+
+
 - (BOOL)deleteObject {
 	[[[SimpleStore currentStore] managedObjectContext] deleteObject:self];
     return [self save];
