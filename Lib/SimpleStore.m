@@ -26,7 +26,7 @@
 }
 
 + (id)storeWithPath:(NSString *)p {
-	id current = [[SimpleStore alloc] initWithPath:[self storePath:p]];
+	id current = [[[SimpleStore alloc] initWithPath:[self storePath:p]] autorelease];
 	[[[NSThread currentThread] threadDictionary] setObject:current forKey:SIMPLE_STORE_KEY];
 	return current;
 }
