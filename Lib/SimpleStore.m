@@ -16,7 +16,7 @@
 
 + (id)currentStore {
 #ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]]), @"SimpleData operations must occur on the main thread");
+    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
 #endif
 	return [[[NSThread currentThread] threadDictionary] objectForKey:SIMPLE_STORE_KEY];
 }
@@ -30,7 +30,7 @@
 
 + (id)storeWithPath:(NSString *)p {
 #ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]]), @"SimpleData operations must occur on the main thread");
+    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
 #endif
 	id current = [[[SimpleStore alloc] initWithPath:[self storePath:p]] autorelease];
 	[[[NSThread currentThread] threadDictionary] setObject:current forKey:SIMPLE_STORE_KEY];
@@ -39,7 +39,7 @@
 
 + (void)deleteStoreAtPath:(NSString *)p {	
 #ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]]), @"SimpleData operations must occur on the main thread");
+    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
 #endif
 	[[NSFileManager defaultManager] removeItemAtPath:[self storePath:p] error:nil];
 }
@@ -116,21 +116,21 @@
 
 - (BOOL)save {
 #ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]]), @"SimpleData operations must occur on the main thread");
+    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
 #endif
 	return managedObjectContext && [managedObjectContext hasChanges] && [managedObjectContext save:nil];
 }
 
 - (BOOL)saveAndClose {
 #ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]]), @"SimpleData operations must occur on the main thread");
+    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
 #endif
 	return [self save] && [self close];
 }
 
 - (BOOL)close {
 #ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]]), @"SimpleData operations must occur on the main thread");
+    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
 #endif
 	[[[NSThread currentThread] threadDictionary] removeObjectForKey:SIMPLE_STORE_KEY];
 	[self release];

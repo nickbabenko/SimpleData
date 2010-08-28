@@ -23,64 +23,63 @@
 
 
 - (BOOL)save {
-    __block BOOL status;
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        status = [[SimpleStore currentStore] save];
-    });
-    return status;
+#ifdef DEBUG
+    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
+#endif
+    return [[SimpleStore currentStore] save];
 }
 
 
 - (void)deleteObjectAndSave:(BOOL)save {
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        [[[SimpleStore currentStore] managedObjectContext] deleteObject:self];
-        if (save) [self save];
-    });
+#ifdef DEBUG
+    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
+#endif
+    [[[SimpleStore currentStore] managedObjectContext] deleteObject:self];
+    if (save) [self save];
 }
 
 
 - (BOOL)deleteObject {
-    __block BOOL status;
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        [[[SimpleStore currentStore] managedObjectContext] deleteObject:self];
-        status = [self save];
-    });
-    return status;
+#ifdef DEBUG
+    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
+#endif
+    [[[SimpleStore currentStore] managedObjectContext] deleteObject:self];
+    return [self save];;
 }
 
 
 + (BOOL)deleteAllObjects {
-    __block BOOL status;
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        NSArray *objects = [self findAll];
-        NSManagedObjectContext *moc = [[SimpleStore currentStore] managedObjectContext];
-        for (NSManagedObject *object in objects) {
-            [moc deleteObject:object];
-        }
-        status = [[SimpleStore currentStore] save];
-    });
-    return status;
+#ifdef DEBUG
+    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
+#endif
+    NSArray *objects = [self findAll];
+    NSManagedObjectContext *moc = [[SimpleStore currentStore] managedObjectContext];
+    for (NSManagedObject *object in objects) {
+        [moc deleteObject:object];
+    }
+    return [[SimpleStore currentStore] save];
 }
 
 
 + (id)createWithAttributes:(NSDictionary *)attributes {
-    __block id obj  = nil;
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        obj = [[self alloc] initWithEntity:[NSEntityDescription entityForName:[self description]
+#ifdef DEBUG
+    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
+#endif
+    id obj = [[self alloc] initWithEntity:[NSEntityDescription entityForName:[self description]
                                                           inManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]] 
                insertIntoManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]];
         for (NSString *attr in attributes) {
             [obj setValue:[attributes objectForKey:attr] forKey:attr];
         }
-    });
     return [obj autorelease];
 }
 
 
 - (void)setAttributes:(NSDictionary *)attributes {
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        [self setValuesForKeysWithDictionary:attributes];
-    });
+#ifdef DEBUG
+    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
+#endif
+   [self setValuesForKeysWithDictionary:attributes];
 }
 
 
@@ -104,25 +103,25 @@
 
 
 + (id)findWithPredicate:(NSPredicate *)predicate limit:(NSUInteger)limit sortBy:(NSMutableArray *)sortDescriptors {
-    __block NSArray *array = nil;
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        NSManagedObjectContext *moc = [[SimpleStore currentStore] managedObjectContext];
-        NSEntityDescription *entityDescription = [NSEntityDescription
-                                                  entityForName:[self description] inManagedObjectContext:moc];
-        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-        
-        request.sortDescriptors = sortDescriptors;
-        
-        [request setEntity:entityDescription];
-        
-        if (limit)
-            request.fetchLimit = limit;
-        
-        [request setPredicate:predicate];
-        
-        NSError *error = nil;
-        array = [moc executeFetchRequest:request error:&error];
-    });
+#ifdef DEBUG
+    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
+#endif
+    NSManagedObjectContext *moc = [[SimpleStore currentStore] managedObjectContext];
+    NSEntityDescription *entityDescription = [NSEntityDescription
+                                              entityForName:[self description] inManagedObjectContext:moc];
+    NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+    
+    request.sortDescriptors = sortDescriptors;
+    
+    [request setEntity:entityDescription];
+    
+    if (limit)
+        request.fetchLimit = limit;
+    
+    [request setPredicate:predicate];
+    
+    NSError *error = nil;
+    NSArray *array = [moc executeFetchRequest:request error:&error];
     
 	return array;
 }
@@ -184,16 +183,16 @@
 
 
 + (id)_createWith:(NSMutableArray *)attributes {
-    __block id obj = nil;
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        obj = [[self alloc] initWithEntity:[NSEntityDescription entityForName:[self description]
-                                                          inManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]] 
-               insertIntoManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]];
-        while ([attributes count] > 0) {
-            NSString *key = [attributes shift];
-            [obj setValue:[attributes shift] forKey:key];
-        }
-    });
+#ifdef DEBUG
+    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
+#endif
+    id obj = [[self alloc] initWithEntity:[NSEntityDescription entityForName:[self description]
+                                                      inManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]] 
+           insertIntoManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]];
+    while ([attributes count] > 0) {
+        NSString *key = [attributes shift];
+        [obj setValue:[attributes shift] forKey:key];
+    }
 	return [obj autorelease];	
 }
 
