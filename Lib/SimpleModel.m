@@ -23,49 +23,68 @@
 
 
 - (BOOL)save {
-	return [[SimpleStore currentStore] save];
+    __block BOOL status;
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        status = [[SimpleStore currentStore] save];
+    });
+    return status;
 }
 
 
 - (void)deleteObjectAndSave:(BOOL)save {
-	[[[SimpleStore currentStore] managedObjectContext] deleteObject:self];
-    if (save) [self save];
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [[[SimpleStore currentStore] managedObjectContext] deleteObject:self];
+        if (save) [self save];
+    });
 }
 
 
 - (BOOL)deleteObject {
-	[[[SimpleStore currentStore] managedObjectContext] deleteObject:self];
-    return [self save];
+    __block BOOL status;
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [[[SimpleStore currentStore] managedObjectContext] deleteObject:self];
+        status = [self save];
+    });
+    return status;
 }
 
 
 + (BOOL)deleteAllObjects {
-    NSArray *objects = [self findAll];
-    NSManagedObjectContext *moc = [[SimpleStore currentStore] managedObjectContext];
-    for (NSManagedObject *object in objects) {
-        [moc deleteObject:object];
-    }
-    return [[SimpleStore currentStore] save];
+    __block BOOL status;
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        NSArray *objects = [self findAll];
+        NSManagedObjectContext *moc = [[SimpleStore currentStore] managedObjectContext];
+        for (NSManagedObject *object in objects) {
+            [moc deleteObject:object];
+        }
+        status = [[SimpleStore currentStore] save];
+    });
+    return status;
 }
 
 
 + (id)createWithAttributes:(NSDictionary *)attributes {
-	id obj = [[self alloc] initWithEntity:[NSEntityDescription entityForName:self.description
-													  inManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]] 
-		   insertIntoManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]];
-	for (NSString *attr in attributes) {
-		[obj setValue:[attributes objectForKey:attr] forKey:attr];
-	}
-	return [obj autorelease];
+    __block id obj  = nil;
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        obj = [[self alloc] initWithEntity:[NSEntityDescription entityForName:[self description]
+                                                          inManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]] 
+               insertIntoManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]];
+        for (NSString *attr in attributes) {
+            [obj setValue:[attributes objectForKey:attr] forKey:attr];
+        }
+    });
+    return [obj autorelease];
 }
 
 
 - (void)setAttributes:(NSDictionary *)attributes {
-    [self setValuesForKeysWithDictionary:attributes];
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [self setValuesForKeysWithDictionary:attributes];
+    });
 }
 
 
-+ (id)find:(id)obj inColumn:(NSString *)col {
++ (id)find:(id)obj inColumn:(NSString *)col {    
 	NSArray *result = [self findWithPredicate: [NSPredicate predicateWithFormat:
 												[NSString stringWithFormat:@"%@ = %%@", col], obj]
 										limit: 1];
@@ -85,22 +104,26 @@
 
 
 + (id)findWithPredicate:(NSPredicate *)predicate limit:(NSUInteger)limit sortBy:(NSMutableArray *)sortDescriptors {
-	NSManagedObjectContext *moc = [[SimpleStore currentStore] managedObjectContext];
-	NSEntityDescription *entityDescription = [NSEntityDescription
-											  entityForName:self.description inManagedObjectContext:moc];
-	NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
-	
-	request.sortDescriptors = sortDescriptors;
-	
-	[request setEntity:entityDescription];
-	
-	if (limit)
-		request.fetchLimit = limit;
-	
-	[request setPredicate:predicate];
-	
-	NSError *error = nil;
-	NSArray *array = [moc executeFetchRequest:request error:&error];
+    __block NSArray *array = nil;
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        NSManagedObjectContext *moc = [[SimpleStore currentStore] managedObjectContext];
+        NSEntityDescription *entityDescription = [NSEntityDescription
+                                                  entityForName:[self description] inManagedObjectContext:moc];
+        NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
+        
+        request.sortDescriptors = sortDescriptors;
+        
+        [request setEntity:entityDescription];
+        
+        if (limit)
+            request.fetchLimit = limit;
+        
+        [request setPredicate:predicate];
+        
+        NSError *error = nil;
+        array = [moc executeFetchRequest:request error:&error];
+    });
+    
 	return array;
 }
 
@@ -161,13 +184,16 @@
 
 
 + (id)_createWith:(NSMutableArray *)attributes {
-	id obj = [[self alloc] initWithEntity:[NSEntityDescription entityForName:self.description
-													  inManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]] 
-		   insertIntoManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]];
-	while ([attributes count] > 0) {
-		NSString *key = [attributes shift];
-		[obj setValue:[attributes shift] forKey:key];
-	}
+    __block id obj = nil;
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        obj = [[self alloc] initWithEntity:[NSEntityDescription entityForName:[self description]
+                                                          inManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]] 
+               insertIntoManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]];
+        while ([attributes count] > 0) {
+            NSString *key = [attributes shift];
+            [obj setValue:[attributes shift] forKey:key];
+        }
+    });
 	return [obj autorelease];	
 }
 
