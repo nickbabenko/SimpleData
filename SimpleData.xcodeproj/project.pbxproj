@@ -786,10 +786,10 @@
 			children = (
 				D3E864EF1077DCE40079694D /* SimpleStore.h */,
 				D3E864F01077DCE40079694D /* SimpleStore.m */,
-				D30234D31077FDF300EDF004 /* SDTableViewController.h */,
-				D30234D41077FDF300EDF004 /* SDTableViewController.m */,
 				D30234E8107817D500EDF004 /* SimpleModel.h */,
 				D30234E9107817D500EDF004 /* SimpleModel.m */,
+				D30234D31077FDF300EDF004 /* SDTableViewController.h */,
+				D30234D41077FDF300EDF004 /* SDTableViewController.m */,
 				D3874FC1107867FD00F290C2 /* NSString.h */,
 				D3874FC2107867FD00F290C2 /* NSString.m */,
 				D3CA0B561079BAF100BBF55F /* UIApplication.h */,

@@ -10,39 +10,19 @@
 #import "NSString.h"
 #import "UIApplication.h"
 
+static SimpleStore *current = nil;
+
 @implementation SimpleStore
+
 @synthesize path;
 
-
-+ (id)currentStore {
-#ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
-#endif
-	return [[[NSThread currentThread] threadDictionary] objectForKey:SIMPLE_STORE_KEY];
+- (void)dealloc {
+    [managedObjectModel release];
+    [persistentStoreCoordinator release];
+    
+	[super dealloc];
 }
 
-+ (NSString *)storePath:(NSString *)p {
-	if (![p hasSubstring:@"/"])
-		return [[UIApplication documentsDirectory] stringByAppendingPathComponent:p];
-	else 
-		return p;
-}
-
-+ (id)storeWithPath:(NSString *)p {
-#ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
-#endif
-	id current = [[[SimpleStore alloc] initWithPath:[self storePath:p]] autorelease];
-	[[[NSThread currentThread] threadDictionary] setObject:current forKey:SIMPLE_STORE_KEY];
-	return current;
-}
-
-+ (void)deleteStoreAtPath:(NSString *)p {	
-#ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
-#endif
-	[[NSFileManager defaultManager] removeItemAtPath:[self storePath:p] error:nil];
-}
 
 - (id)initWithPath:(NSString *)p {
 	if (self = [super init]) {
@@ -51,75 +31,140 @@
 	return self;
 }
 
+
++ (id)currentStore {
+    @synchronized(self) {
+        return current;
+    }
+}
+
+
++ (NSString *)storePath:(NSString *)p {
+	if (![p hasSubstring:@"/"])
+		return [[UIApplication documentsDirectory] stringByAppendingPathComponent:p];
+	else 
+		return p;
+}
+
+
++ (id)storeWithPath:(NSString *)p {
+#ifdef DEBUG
+    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData store operations must occur on the main thread");
+#endif
+    [current release];
+    current = nil;
+	current = [[SimpleStore alloc] initWithPath:[self storePath:p]];
+    current.managedObjectContext;
+	return current;
+}
+
+
++ (void)deleteStoreAtPath:(NSString *)p {	
+#ifdef DEBUG
+    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData store operations must occur on the main thread");
+#endif
+	[[NSFileManager defaultManager] removeItemAtPath:[self storePath:p] error:nil];
+    [current release];
+    current = nil;
+}
+
+
 /**
  Returns the managed object context for the application.
  If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
  */
-- (NSManagedObjectContext *) managedObjectContext {
-	
-    if (managedObjectContext != nil) {
+- (NSManagedObjectContext *)managedObjectContext {
+	@synchronized(self) {
+        NSMutableDictionary *threadInfo = [[NSThread currentThread] threadDictionary];
+        
+        NSManagedObjectContext *managedObjectContext = [threadInfo objectForKey:@"__SIMPLE_DATA_MOC__"];
+        if (managedObjectContext != nil) {
+            return managedObjectContext;
+        }
+        
+        // Build and store the new context
+        managedObjectContext = [[[NSManagedObjectContext alloc] init] autorelease];
+        [threadInfo setObject:managedObjectContext forKey:@"__SIMPLE_DATA_MOC__"];
+
+        // Set up the context
+        [managedObjectContext setPersistentStoreCoordinator:[self persistentStoreCoordinator]];
+        [managedObjectContext setMergePolicy:NSOverwriteMergePolicy];
+        
+        // If this is not main thread's context, then we need to listen for chanages and merge those into the main thread's context
+        if ([[NSThread currentThread] isEqual:[NSThread mainThread]] == NO) {
+            // Register for notifications, and do the actual work on the main thread's queue 
+            [[NSNotificationCenter defaultCenter] addObserverForName:NSManagedObjectContextDidSaveNotification object:managedObjectContext queue:[NSOperationQueue mainQueue] usingBlock:^ (NSNotification *note) {
+            
+                 NSManagedObjectContext *mainManagedObjectContext = [[[NSThread mainThread] threadDictionary] objectForKey:@"__SIMPLE_DATA_MOC__"];
+#ifdef DEBUG
+                NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"MOC merge notification must occur on main thread");
+                NSAssert(mainManagedObjectContext != nil, @"MOC for main thread does not exist for merging");
+                NSLog(@"Merging %@", note.userInfo);
+#endif
+                [mainManagedObjectContext mergeChangesFromContextDidSaveNotification:note];
+                
+            }];
+        }
+    
         return managedObjectContext;
     }
-	
-    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
-    if (coordinator != nil) {
-        managedObjectContext = [[NSManagedObjectContext alloc] init];
-        [managedObjectContext setPersistentStoreCoordinator: coordinator];
-    }
-    return managedObjectContext;
 }
+
 
 /**
  Returns the managed object model for the application.
  If the model doesn't already exist, it is created by merging all of the models found in the application bundle.
  */
 - (NSManagedObjectModel *)managedObjectModel {
-	
-    if (managedObjectModel != nil) {
+    @synchronized(self) {
+        if (managedObjectModel != nil) {
+            return managedObjectModel;
+        }
+        managedObjectModel = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];    
         return managedObjectModel;
     }
-    managedObjectModel = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];    
-    return managedObjectModel;
 }
+
 
 /**
  Returns the persistent store coordinator for the application.
  If the coordinator doesn't already exist, it is created and the application's store added to it.
  */
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
-	
-    if (persistentStoreCoordinator != nil) {
+    @synchronized(self) {	
+        if (persistentStoreCoordinator != nil) {
+            return persistentStoreCoordinator;
+        }
+        
+        NSURL *storeUrl = [NSURL fileURLWithPath: self.path];
+        
+        NSError *error = nil;
+        persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+        if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:nil error:&error]) {
+            /*
+             Replace this implementation with code to handle the error appropriately.
+             
+             abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
+             
+             Typical reasons for an error here include:
+             * The persistent store is not accessible
+             * The schema for the persistent store is incompatible with current managed object model
+             Check the error message to determine what the actual problem was.
+             */
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }    
+        
         return persistentStoreCoordinator;
     }
-	
-    NSURL *storeUrl = [NSURL fileURLWithPath: self.path];
-	
-	NSError *error = nil;
-    persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:nil error:&error]) {
-		/*
-		 Replace this implementation with code to handle the error appropriately.
-		 
-		 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
-		 
-		 Typical reasons for an error here include:
-		 * The persistent store is not accessible
-		 * The schema for the persistent store is incompatible with current managed object model
-		 Check the error message to determine what the actual problem was.
-		 */
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-		abort();
-    }    
-	
-    return persistentStoreCoordinator;
 }
 
+
 - (BOOL)save {
-#ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
-#endif
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
 	return managedObjectContext && [managedObjectContext hasChanges] && [managedObjectContext save:nil];
 }
+
 
 - (BOOL)saveAndClose {
 #ifdef DEBUG
@@ -127,6 +172,7 @@
 #endif
 	return [self save] && [self close];
 }
+
 
 - (BOOL)close {
 #ifdef DEBUG
@@ -136,15 +182,5 @@
 	[self release];
 	return YES;
 }
-
-- (void)dealloc {
-    [managedObjectContext release];
-    [managedObjectModel release];
-    [persistentStoreCoordinator release];
-
-	[super dealloc];
-}
-
-
 
 @end

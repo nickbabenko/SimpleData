@@ -13,25 +13,28 @@
 #define SIMPLE_STORE ((SimpleStore *)[SimpleStore currentStore])
 
 @interface SimpleStore : NSObject {
-	NSManagedObjectModel *managedObjectModel;
-    NSManagedObjectContext *managedObjectContext;	    
-    NSPersistentStoreCoordinator *persistentStoreCoordinator;
 	NSString *path;
+	NSManagedObjectModel *managedObjectModel;    
+    NSPersistentStoreCoordinator *persistentStoreCoordinator;
 }
 
++ (id)currentStore;
 + (id)storeWithPath:(NSString *)p;
 + (void)deleteStoreAtPath:(NSString *)p;
-+ (id)currentStore;
+
 - (id)initWithPath:(NSString *)p;
+
 - (BOOL)save;
 - (BOOL)close;
 - (BOOL)saveAndClose;
 
 
-@property (nonatomic, copy) NSString *path;
+@property (copy) NSString *path;
 
-@property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;
-@property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
-@property (nonatomic, retain, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+@property (retain, readonly) NSManagedObjectModel *managedObjectModel;
+@property (retain, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+
+// MOCs are per-thread
+@property (retain, readonly) NSManagedObjectContext *managedObjectContext;
 
 @end

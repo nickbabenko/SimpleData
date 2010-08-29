@@ -11,15 +11,27 @@
 
 }
 
+
+@property (nonatomic, readonly) NSURL *objectURI;
+@property (nonatomic, readonly) NSString *objectURIString;
+
++ (id)findByObjectURI:(NSURL *)objectURI;
++ (id)findByObjectURIString:(NSString *)objectURI;
+
 + (id)createWithAttributes:(NSDictionary *)attributes;
-+ (id)findWithPredicate:(NSPredicate *)predicate limit:(NSUInteger)limit;
+
 + (id)findAll;
 + (id)find:(id)obj inColumn:(NSString *)col;
++ (id)findWithPredicate:(NSPredicate *)predicate limit:(NSUInteger)limit;
 + (id)findWithPredicate:(NSPredicate *)predicate limit:(NSUInteger)limit sortBy:(NSMutableArray *)sortCol;
+
 + (void)forwardInvocation:(NSInvocation *)invocation;
+
 - (BOOL)save;
-- (void)deleteObjectAndSave:(BOOL)save;
 - (BOOL)deleteObject;
 + (BOOL)deleteAllObjects;
+- (void)deleteObjectAndSave:(BOOL)save;
+
 - (void)setAttributes:(NSDictionary *)attributes;
+
 @end

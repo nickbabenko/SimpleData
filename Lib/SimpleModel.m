@@ -16,6 +16,45 @@
 @implementation SimpleModel
 
 
++ (id)findByObjectURI:(NSURL *)objectURI {    
+    // Look up the user
+    NSManagedObjectID *objectID = [SIMPLE_STORE.persistentStoreCoordinator managedObjectIDForURIRepresentation:objectURI];
+    if (!objectID) {
+        return nil;
+    }
+    
+    id object = [SIMPLE_STORE.managedObjectContext objectWithID:objectID];
+    if (![object isFault]) {
+        return object;
+    }
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF == %@", objectID];
+    NSArray *result = [self findWithPredicate:predicate limit:1];
+    
+    if (result && [result count] == 1) {
+		return [result objectAtIndex:0];
+	} 
+    else {
+        return nil;
+    }
+}
+
+
++ (id)findByObjectURIString:(NSString *)objectURI {
+    return [self findByObjectURI:[NSURL URLWithString:objectURI]];
+}
+
+
+- (NSURL *)objectURI {
+    return self.objectID.URIRepresentation;
+}
+
+
+- (NSString *)objectURIString {
+    return [self.objectURI absoluteString];
+}
+
+
 + (NSArray *)findAll {
 	return [self findWithPredicate: [NSPredicate predicateWithFormat:@"1 = 1"]
 							 limit: 0];
@@ -23,62 +62,47 @@
 
 
 - (BOOL)save {
-#ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
-#endif
-    return [[SimpleStore currentStore] save];
+    return [SIMPLE_STORE save];
 }
 
 
 - (void)deleteObjectAndSave:(BOOL)save {
-#ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
-#endif
-    [[[SimpleStore currentStore] managedObjectContext] deleteObject:self];
+    [SIMPLE_STORE.managedObjectContext deleteObject:self];
     if (save) [self save];
 }
 
 
 - (BOOL)deleteObject {
-#ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
-#endif
-    [[[SimpleStore currentStore] managedObjectContext] deleteObject:self];
+    [SIMPLE_STORE.managedObjectContext deleteObject:self];
     return [self save];;
 }
 
 
 + (BOOL)deleteAllObjects {
-#ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
-#endif
     NSArray *objects = [self findAll];
-    NSManagedObjectContext *moc = [[SimpleStore currentStore] managedObjectContext];
+    NSManagedObjectContext *moc = SIMPLE_STORE.managedObjectContext;
     for (NSManagedObject *object in objects) {
         [moc deleteObject:object];
     }
-    return [[SimpleStore currentStore] save];
+    return [SIMPLE_STORE save];
 }
 
 
 + (id)createWithAttributes:(NSDictionary *)attributes {
-#ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
-#endif
-    id obj = [[self alloc] initWithEntity:[NSEntityDescription entityForName:[self description]
-                                                          inManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]] 
-               insertIntoManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]];
-        for (NSString *attr in attributes) {
-            [obj setValue:[attributes objectForKey:attr] forKey:attr];
-        }
+    NSManagedObjectContext *moc = SIMPLE_STORE.managedObjectContext;
+
+    NSEntityDescription *entity = [NSEntityDescription entityForName:[self description] inManagedObjectContext:moc]; 
+    id obj = [[self alloc] initWithEntity:entity insertIntoManagedObjectContext:moc];
+    
+    for (NSString *attr in attributes) {
+        [obj setValue:[attributes objectForKey:attr] forKey:attr];
+    }
+    
     return [obj autorelease];
 }
 
 
 - (void)setAttributes:(NSDictionary *)attributes {
-#ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
-#endif
    [self setValuesForKeysWithDictionary:attributes];
 }
 
@@ -103,12 +127,11 @@
 
 
 + (id)findWithPredicate:(NSPredicate *)predicate limit:(NSUInteger)limit sortBy:(NSMutableArray *)sortDescriptors {
-#ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
-#endif
-    NSManagedObjectContext *moc = [[SimpleStore currentStore] managedObjectContext];
+    NSManagedObjectContext *moc = SIMPLE_STORE.managedObjectContext;
+
     NSEntityDescription *entityDescription = [NSEntityDescription
                                               entityForName:[self description] inManagedObjectContext:moc];
+    
     NSFetchRequest *request = [[[NSFetchRequest alloc] init] autorelease];
     
     request.sortDescriptors = sortDescriptors;
@@ -183,12 +206,10 @@
 
 
 + (id)_createWith:(NSMutableArray *)attributes {
-#ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData operations must occur on the main thread");
-#endif
-    id obj = [[self alloc] initWithEntity:[NSEntityDescription entityForName:[self description]
-                                                      inManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]] 
-           insertIntoManagedObjectContext:[[SimpleStore currentStore] managedObjectContext]];
+    NSManagedObjectContext *moc = SIMPLE_STORE.managedObjectContext;
+
+    NSEntityDescription *entity = [NSEntityDescription entityForName:[self description] inManagedObjectContext:moc];
+    id obj = [[self alloc] initWithEntity:entity insertIntoManagedObjectContext:moc];
     while ([attributes count] > 0) {
         NSString *key = [attributes shift];
         [obj setValue:[attributes shift] forKey:key];
