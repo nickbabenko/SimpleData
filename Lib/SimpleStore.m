@@ -48,24 +48,29 @@ static SimpleStore *current = nil;
 
 
 + (id)storeWithPath:(NSString *)p {
+    @synchronized(self) {
 #ifdef DEBUG
     NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData store operations must occur on the main thread");
 #endif
-    [current release];
-    current = nil;
-	current = [[SimpleStore alloc] initWithPath:[self storePath:p]];
-    current.managedObjectContext;
-	return current;
+        [current release];
+        current = nil;
+        current = [[SimpleStore alloc] initWithPath:[self storePath:p]];
+        current.managedObjectContext;
+        return current;
+    }
 }
 
 
 + (void)deleteStoreAtPath:(NSString *)p {	
+    @synchronized(self) {
 #ifdef DEBUG
     NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData store operations must occur on the main thread");
 #endif
-	[[NSFileManager defaultManager] removeItemAtPath:[self storePath:p] error:nil];
-    [current release];
-    current = nil;
+        [[NSFileManager defaultManager] removeItemAtPath:[self storePath:p] error:nil];
+        [[[NSThread currentThread] threadDictionary] removeObjectForKey:@"__SIMPLE_DATA_MOC__"];
+        [current release];
+        current = nil;
+    }
 }
 
 
