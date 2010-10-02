@@ -104,7 +104,8 @@ static SimpleStore *current = nil;
 #ifdef DEBUG
                 NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"MOC merge notification must occur on main thread");
                 NSAssert(mainManagedObjectContext != nil, @"MOC for main thread does not exist for merging");
-                NSLog(@"Merging %@", note.userInfo);
+                NSLog(@"Merging");
+//                NSLog(@"Merging %@", note.userInfo);
 #endif
                 [mainManagedObjectContext mergeChangesFromContextDidSaveNotification:note];
                 
