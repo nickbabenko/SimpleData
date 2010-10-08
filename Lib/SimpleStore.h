@@ -18,9 +18,11 @@
     NSPersistentStoreCoordinator *persistentStoreCoordinator;
 }
 
-+ (id)currentStore;
++ (SimpleStore *)currentStore;
 + (id)storeWithPath:(NSString *)p;
 + (void)deleteStoreAtPath:(NSString *)p;
+
+- (unsigned long long)sizeOfStore;
 
 - (id)initWithPath:(NSString *)p;
 

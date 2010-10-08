@@ -32,7 +32,7 @@ static SimpleStore *current = nil;
 }
 
 
-+ (id)currentStore {
++ (SimpleStore *)currentStore {
     @synchronized(self) {
         return current;
     }
@@ -188,5 +188,13 @@ static SimpleStore *current = nil;
 	[self release];
 	return YES;
 }
+
+
+- (unsigned long long)sizeOfStore {
+    NSError *error = nil;
+    NSDictionary *attribs = [[NSFileManager defaultManager] attributesOfItemAtPath:self.path error:&error];
+    return [attribs fileSize];
+}
+
 
 @end
