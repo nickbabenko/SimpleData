@@ -19,7 +19,8 @@ static SimpleStore *current = nil;
 - (void)dealloc {
     [managedObjectModel release];
     [persistentStoreCoordinator release];
-    
+    [self unregisterMOCNotifications];
+    [observers release];
 	[super dealloc];
 }
 
@@ -68,11 +69,32 @@ static SimpleStore *current = nil;
 #endif
         [[NSFileManager defaultManager] removeItemAtPath:[self storePath:p] error:nil];
         [[[NSThread currentThread] threadDictionary] removeObjectForKey:@"__SIMPLE_DATA_MOC__"];
+        [current unregisterMOCNotifications];
         [current release];
         current = nil;
     }
 }
 
+
+- (NSMutableArray *)observers {
+    @synchronized(self) {
+        if (observers) {
+            return [[observers retain] autorelease];
+        }
+        
+        observers = [[NSMutableArray alloc] init];
+        return [[observers retain] autorelease];
+    }
+}
+
+
+- (void)unregisterMOCNotifications {
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    for (id observer in self.observers) {
+        [nc removeObserver:observer];
+    }
+    [self.observers removeAllObjects];
+}
 
 /**
  Returns the managed object context for the application.
@@ -98,7 +120,7 @@ static SimpleStore *current = nil;
         // If this is not main thread's context, then we need to listen for chanages and merge those into the main thread's context
         if ([[NSThread currentThread] isEqual:[NSThread mainThread]] == NO) {
             // Register for notifications, and do the actual work on the main thread's queue 
-            [[NSNotificationCenter defaultCenter] addObserverForName:NSManagedObjectContextDidSaveNotification object:managedObjectContext queue:[NSOperationQueue mainQueue] usingBlock:^ (NSNotification *note) {
+            id observer = [[NSNotificationCenter defaultCenter] addObserverForName:NSManagedObjectContextDidSaveNotification object:managedObjectContext queue:[NSOperationQueue mainQueue] usingBlock:^ (NSNotification *note) {
             
                  NSManagedObjectContext *mainManagedObjectContext = [[[NSThread mainThread] threadDictionary] objectForKey:@"__SIMPLE_DATA_MOC__"];
 #ifdef DEBUG
@@ -110,6 +132,8 @@ static SimpleStore *current = nil;
                 [mainManagedObjectContext mergeChangesFromContextDidSaveNotification:note];
                 
             }];
+            
+            [self.observers addObject:observer];
         }
     
         return managedObjectContext;

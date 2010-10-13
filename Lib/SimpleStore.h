@@ -16,6 +16,7 @@
 	NSString *path;
 	NSManagedObjectModel *managedObjectModel;    
     NSPersistentStoreCoordinator *persistentStoreCoordinator;
+    NSMutableArray *observers;
 }
 
 + (id)currentStore;
@@ -28,13 +29,16 @@
 - (BOOL)close;
 - (BOOL)saveAndClose;
 
+- (void)unregisterMOCNotifications;
 
 @property (copy) NSString *path;
 
-@property (retain, readonly) NSManagedObjectModel *managedObjectModel;
-@property (retain, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+@property (readonly) NSManagedObjectModel *managedObjectModel;
+@property (readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 
 // MOCs are per-thread
-@property (retain, readonly) NSManagedObjectContext *managedObjectContext;
+@property (readonly) NSManagedObjectContext *managedObjectContext;
+
+@property (readonly) NSMutableArray *observers;
 
 @end
