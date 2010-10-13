@@ -19,7 +19,7 @@ static SimpleStore *current = nil;
 - (void)dealloc {
     [managedObjectModel release];
     [persistentStoreCoordinator release];
-    [self unregisterMOCNotifications];
+    [self cleanup];
     [observers release];
 	[super dealloc];
 }
@@ -67,9 +67,15 @@ static SimpleStore *current = nil;
 #ifdef DEBUG
     NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData store operations must occur on the main thread");
 #endif
-        [[NSFileManager defaultManager] removeItemAtPath:[self storePath:p] error:nil];
+        NSError *error;
+        if ([[NSFileManager defaultManager] removeItemAtPath:[self storePath:p] error:&error] == NO) {
+#ifdef DEBUG
+            NSLog(@"Failed to delete store %@: %@", p, error);
+#endif
+        }
+        
         [[[NSThread currentThread] threadDictionary] removeObjectForKey:@"__SIMPLE_DATA_MOC__"];
-        [current unregisterMOCNotifications];
+        [current cleanup];
         [current release];
         current = nil;
     }
@@ -87,6 +93,24 @@ static SimpleStore *current = nil;
     }
 }
 
+- (NSMutableArray *)threadInfos {
+    @synchronized(self) {
+        if (threadInfos) {
+            return [[threadInfos retain] autorelease];
+        }
+        
+        threadInfos = [[NSMutableArray alloc] init];
+        return [[threadInfos retain] autorelease];
+    }
+}
+
+- (void)clearThreadInfos {
+    for (NSMutableDictionary *threadInfo in self.threadInfos) {
+        [threadInfo removeObjectForKey:@"__SIMPLE_DATA_MOC__"];
+    }
+    [self.threadInfos removeAllObjects];
+}
+
 
 - (void)unregisterMOCNotifications {
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -94,6 +118,12 @@ static SimpleStore *current = nil;
         [nc removeObserver:observer];
     }
     [self.observers removeAllObjects];
+}
+
+
+- (void)cleanup {
+    [self clearThreadInfos];
+    [self unregisterMOCNotifications]; 
 }
 
 /**
@@ -113,6 +143,9 @@ static SimpleStore *current = nil;
         managedObjectContext = [[[NSManagedObjectContext alloc] init] autorelease];
         [threadInfo setObject:managedObjectContext forKey:@"__SIMPLE_DATA_MOC__"];
 
+        // Track it
+        [self.threadInfos addObject:threadInfo];
+        
         // Set up the context
         [managedObjectContext setPersistentStoreCoordinator:[self persistentStoreCoordinator]];
         [managedObjectContext setMergePolicy:NSOverwriteMergePolicy];

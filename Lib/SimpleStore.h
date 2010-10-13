@@ -17,6 +17,7 @@
 	NSManagedObjectModel *managedObjectModel;    
     NSPersistentStoreCoordinator *persistentStoreCoordinator;
     NSMutableArray *observers;
+    NSMutableArray *threadInfos;
 }
 
 + (SimpleStore *)currentStore;
@@ -31,7 +32,7 @@
 - (BOOL)close;
 - (BOOL)saveAndClose;
 
-- (void)unregisterMOCNotifications;
+- (void)cleanup;
 
 @property (copy) NSString *path;
 
@@ -42,5 +43,6 @@
 @property (readonly) NSManagedObjectContext *managedObjectContext;
 
 @property (readonly) NSMutableArray *observers;
+@property (readonly) NSMutableArray *threadInfos;
 
 @end
