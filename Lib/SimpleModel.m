@@ -74,6 +74,7 @@
 
 - (BOOL)deleteObject {
     [SIMPLE_STORE.managedObjectContext deleteObject:self];
+    return YES;
 }
 
 
