@@ -183,7 +183,18 @@ static SimpleStore *current = nil;
         if (managedObjectModel != nil) {
             return managedObjectModel;
         }
-        managedObjectModel = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];    
+        
+        // Attempt to find momd (for versioning) first, fallback to mergedModelFromBundles
+        NSString *resource = [[self.path lastPathComponent] stringByDeletingPathExtension];
+        NSString *momdPath = [[NSBundle mainBundle] pathForResource:resource ofType:@"momd"];
+        if (path) {
+            NSURL *momdURL = [NSURL fileURLWithPath:momdPath];
+            managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:momdURL];
+        }
+        else {
+            managedObjectModel = [[NSManagedObjectModel mergedModelFromBundles:nil] retain];    
+        }
+
         return managedObjectModel;
     }
 }
@@ -203,7 +214,9 @@ static SimpleStore *current = nil;
         
         NSError *error = nil;
         persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-        if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:nil error:&error]) {
+        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption, 
+                                                                           [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+        if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&error]) {
             /*
              Replace this implementation with code to handle the error appropriately.
              
