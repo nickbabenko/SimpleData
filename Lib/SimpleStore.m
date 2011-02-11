@@ -187,7 +187,7 @@ static SimpleStore *current = nil;
         // Attempt to find momd (for versioning) first, fallback to mergedModelFromBundles
         NSString *resource = [[self.path lastPathComponent] stringByDeletingPathExtension];
         NSString *momdPath = [[NSBundle mainBundle] pathForResource:resource ofType:@"momd"];
-        if (path) {
+        if (momdPath) {
             NSURL *momdURL = [NSURL fileURLWithPath:momdPath];
             managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:momdURL];
         }
