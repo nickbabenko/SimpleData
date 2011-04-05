@@ -64,20 +64,28 @@ static SimpleStore *current = nil;
 
 + (void)deleteStoreAtPath:(NSString *)p {	
     @synchronized(self) {
+        // Ensure we are on the main thread
 #ifdef DEBUG
-    NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData store operations must occur on the main thread");
+        NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"SimpleData store operations must occur on the main thread");
 #endif
+        
+        // Clean data stored with thread
+        [[[NSThread currentThread] threadDictionary] removeObjectForKey:@"__SIMPLE_DATA_MOC__"];
+        
+        // Clean up store
+        [current cleanup];
+        
+        // Free it up
+        [current release];
+        current = nil;
+        
+        // RIP - the actual delete should always happen last
         NSError *error;
         if ([[NSFileManager defaultManager] removeItemAtPath:[self storePath:p] error:&error] == NO) {
 #ifdef DEBUG
             NSLog(@"Failed to delete store %@: %@", p, error);
 #endif
         }
-        
-        [[[NSThread currentThread] threadDictionary] removeObjectForKey:@"__SIMPLE_DATA_MOC__"];
-        [current cleanup];
-        [current release];
-        current = nil;
     }
 }
 
@@ -108,6 +116,7 @@ static SimpleStore *current = nil;
     for (NSMutableDictionary *threadInfo in self.threadInfos) {
         [threadInfo removeObjectForKey:@"__SIMPLE_DATA_MOC__"];
     }
+    // TODO: remove this, not needed?
     [self.threadInfos removeAllObjects];
 }
 
