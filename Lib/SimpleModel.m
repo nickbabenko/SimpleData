@@ -127,6 +127,7 @@
 
 
 + (id)findWithPredicate:(NSPredicate *)predicate limit:(NSUInteger)limit sortBy:(NSMutableArray *)sortDescriptors {
+              
     NSManagedObjectContext *moc = SIMPLE_STORE.managedObjectContext;
 
     NSEntityDescription *entityDescription = [NSEntityDescription

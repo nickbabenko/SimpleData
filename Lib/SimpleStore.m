@@ -158,6 +158,10 @@ static SimpleStore *current = nil;
         // Set up the context
         [managedObjectContext setPersistentStoreCoordinator:[self persistentStoreCoordinator]];
         [managedObjectContext setMergePolicy:NSOverwriteMergePolicy];
+
+#if DEBUG
+        NSLog(@"[SIMPLE DATA] Creating MOC %@ for thread %@ with OverwriteMergePolicy", managedObjectContext, [NSThread currentThread]);
+#endif
         
         // If this is not main thread's context, then we need to listen for chanages and merge those into the main thread's context
         if ([[NSThread currentThread] isEqual:[NSThread mainThread]] == NO) {
@@ -165,10 +169,10 @@ static SimpleStore *current = nil;
             id observer = [[NSNotificationCenter defaultCenter] addObserverForName:NSManagedObjectContextDidSaveNotification object:managedObjectContext queue:[NSOperationQueue mainQueue] usingBlock:^ (NSNotification *note) {
             
                  NSManagedObjectContext *mainManagedObjectContext = [[[NSThread mainThread] threadDictionary] objectForKey:@"__SIMPLE_DATA_MOC__"];
-#ifdef DEBUG
+#if DEBUG
                 NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"MOC merge notification must occur on main thread");
                 NSAssert(mainManagedObjectContext != nil, @"MOC for main thread does not exist for merging");
-                NSLog(@"Merging");
+                NSLog(@"[SIMPLE DATA] Merging into main thread MOC %@ with %d insertions %d updates %d deletes", managedObjectContext, ((NSSet *)[note valueForKeyPath:@"userInfo.inserted"]).count, ((NSSet *)[note valueForKeyPath:@"userInfo.updated"]).count, ((NSSet *)[note valueForKeyPath:@"userInfo.deleted"]).count);
 //                NSLog(@"Merging %@", note.userInfo);
 #endif
                 [mainManagedObjectContext mergeChangesFromContextDidSaveNotification:note];
