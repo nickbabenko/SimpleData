@@ -172,7 +172,7 @@ static SimpleStore *current = nil;
 #if DEBUG
                 NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]], @"MOC merge notification must occur on main thread");
                 NSAssert(mainManagedObjectContext != nil, @"MOC for main thread does not exist for merging");
-                NSLog(@"[SIMPLE DATA] Merging into main thread MOC %@ with %d insertions %d updates %d deletes", managedObjectContext, ((NSSet *)[note valueForKeyPath:@"userInfo.inserted"]).count, ((NSSet *)[note valueForKeyPath:@"userInfo.updated"]).count, ((NSSet *)[note valueForKeyPath:@"userInfo.deleted"]).count);
+                NSLog(@"[SIMPLE DATA] Merging into main thread MOC %@ with insertions: %d updates: %d  deletes: %d", managedObjectContext, ((NSSet *)[note valueForKeyPath:@"userInfo.inserted"]).count, ((NSSet *)[note valueForKeyPath:@"userInfo.updated"]).count, ((NSSet *)[note valueForKeyPath:@"userInfo.deleted"]).count);
 //                NSLog(@"Merging %@", note.userInfo);
 #endif
                 [mainManagedObjectContext mergeChangesFromContextDidSaveNotification:note];
@@ -251,7 +251,13 @@ static SimpleStore *current = nil;
 
 - (BOOL)save {
     NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-	return managedObjectContext && [managedObjectContext hasChanges] && [managedObjectContext save:nil];
+	if (managedObjectContext && [managedObjectContext hasChanges]) { 
+#if DEBUG
+        NSLog(@"[SIMPLE DATA] %@ is saving on thread %@!", managedObjectContext, [NSThread currentThread]);   
+#endif
+        return [managedObjectContext save:nil];
+    }
+    return NO; 
 }
 
 
