@@ -50,7 +50,7 @@ static SimpleStore *current = nil;
 	NSString *path = [self storePath:p];
 	NSError *error = nil;
     NSDictionary *attribs = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
-	if (error) return nil;
+	if (error) return 0;
     return [attribs fileSize];
 }
 
