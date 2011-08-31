@@ -23,6 +23,8 @@
 + (SimpleStore *)currentStore;
 + (id)storeWithPath:(NSString *)p;
 + (void)deleteStoreAtPath:(NSString *)p;
++ (NSString *)storePath:(NSString *)p;
++ (unsigned long long)sizeOfStore:(NSString *)p;
 
 - (unsigned long long)sizeOfStore;
 

@@ -39,7 +39,6 @@ static SimpleStore *current = nil;
     }
 }
 
-
 + (NSString *)storePath:(NSString *)p {
 	if (![p hasSubstring:@"/"])
 		return [[UIApplication documentsDirectory] stringByAppendingPathComponent:p];
@@ -47,6 +46,13 @@ static SimpleStore *current = nil;
 		return p;
 }
 
++ (unsigned long long)sizeOfStore:(NSString *)p {
+	NSString *path = [self storePath:p];
+	NSError *error = nil;
+    NSDictionary *attribs = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
+	if (error) return nil;
+    return [attribs fileSize];
+}
 
 + (id)storeWithPath:(NSString *)p {
     @synchronized(self) {
@@ -280,9 +286,7 @@ static SimpleStore *current = nil;
 
 
 - (unsigned long long)sizeOfStore {
-    NSError *error = nil;
-    NSDictionary *attribs = [[NSFileManager defaultManager] attributesOfItemAtPath:self.path error:&error];
-    return [attribs fileSize];
+	return [[self class] sizeOfStore:self.path];
 }
 
 
