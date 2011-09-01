@@ -174,8 +174,15 @@
 	int i = 2;
 	for (NSString *chunk in chunks) {
 		if (![chunk isEqualToString:@""]) {
-			id arg;
+			id arg = nil;
 			[invocation getArgument:&arg atIndex:i++];
+			if (arg == nil) {
+#ifdef DEBUG
+				NSAssert(arg != nil, @"Detected nil argument!");
+				NSLog(@"ERROR: SimpleData pass a nil argument! Check your code. Your probably doing it wrong.");
+				continue;
+#endif
+			}
 			[attributes addObject:chunk];
 			[attributes addObject:arg];
 		}
