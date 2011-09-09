@@ -815,7 +815,7 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		1D6058900D05DD3D006BFB54 /* GTMiPhoneUnitTesting */ = {
+		1D6058900D05DD3D006BFB54 /* SimpleDataApp */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "SimpleDataApp" */;
 			buildPhases = (
@@ -873,6 +873,9 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "SimpleData" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -898,7 +901,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				1D6058900D05DD3D006BFB54 /* GTMiPhoneUnitTesting */,
+				1D6058900D05DD3D006BFB54 /* SimpleDataApp */,
 				D387529310793D8000F290C2 /* Test */,
 				FED23AED11E7EFB1007AAF8A /* SimpleData */,
 			);
@@ -1046,7 +1049,7 @@
 /* Begin PBXTargetDependency section */
 		D387529B10793D8F00F290C2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1D6058900D05DD3D006BFB54 /* GTMiPhoneUnitTesting */;
+			target = 1D6058900D05DD3D006BFB54 /* SimpleDataApp */;
 			targetProxy = D387529A10793D8F00F290C2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1099,7 +1102,6 @@
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1113,7 +1115,6 @@
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
 				SDKROOT = iphoneos;
 			};
 			name = Release;
@@ -1136,9 +1137,8 @@
 					"-framework",
 					UIKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = Test;
-				SDKROOT = iphoneos3.1;
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -1149,7 +1149,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/UIKit.framework/Headers/UIKit.h";
 				INFOPLIST_FILE = "Test-Info.plist";
@@ -1160,9 +1159,8 @@
 					"-framework",
 					UIKit,
 				);
-				PREBINDING = NO;
 				PRODUCT_NAME = Test;
-				SDKROOT = iphoneos3.1;
+				SDKROOT = iphoneos;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -1175,7 +1173,6 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = SimpleData_Prefix.pch;
-				PREBINDING = NO;
 				PRODUCT_NAME = SimpleData;
 			};
 			name = Debug;
@@ -1186,9 +1183,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_PREFIX_HEADER = SimpleData_Prefix.pch;
-				PREBINDING = NO;
 				PRODUCT_NAME = SimpleData;
 				ZERO_LINK = NO;
 			};
