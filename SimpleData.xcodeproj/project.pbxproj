@@ -1122,6 +1122,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PREFIX_HEADER = SimpleData_Prefix.pch;
 				PRODUCT_NAME = SimpleData;
+				SDKROOT = iphoneos4.3;
 				SKIP_INSTALL = YES;
 				ZERO_LINK = NO;
 			};
@@ -1235,6 +1236,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = SimpleData_Prefix.pch;
 				PRODUCT_NAME = SimpleData;
+				SDKROOT = iphoneos4.3;
 			};
 			name = Debug;
 		};
@@ -1250,6 +1252,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PREFIX_HEADER = SimpleData_Prefix.pch;
 				PRODUCT_NAME = SimpleData;
+				SDKROOT = iphoneos4.3;
 				SKIP_INSTALL = YES;
 				ZERO_LINK = NO;
 			};
