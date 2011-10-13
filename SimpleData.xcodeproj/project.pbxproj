@@ -1075,6 +1075,7 @@
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				SDKROOT = iphoneos;
 			};
 			name = Adhoc;
@@ -1121,8 +1122,9 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PREFIX_HEADER = SimpleData_Prefix.pch;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				PRODUCT_NAME = SimpleData;
-				SDKROOT = iphoneos4.3;
+				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				ZERO_LINK = NO;
 			};
@@ -1164,6 +1166,7 @@
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1177,6 +1180,7 @@
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				SDKROOT = iphoneos;
 			};
 			name = Release;
@@ -1235,8 +1239,9 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = SimpleData_Prefix.pch;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				PRODUCT_NAME = SimpleData;
-				SDKROOT = iphoneos4.3;
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -1251,8 +1256,9 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PREFIX_HEADER = SimpleData_Prefix.pch;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				PRODUCT_NAME = SimpleData;
-				SDKROOT = iphoneos4.3;
+				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				ZERO_LINK = NO;
 			};
