@@ -163,7 +163,9 @@ static SimpleStore *current = nil;
         
         // Set up the context
         [managedObjectContext setPersistentStoreCoordinator:[self persistentStoreCoordinator]];
-        [managedObjectContext setMergePolicy:NSOverwriteMergePolicy];
+        // main thread changes should override values in MOC
+        [managedObjectContext setMergePolicy:NSMergeByPropertyStoreTrumpMergePolicy];
+//        [managedObjectContext setMergePolicy:NSOverwriteMergePolicy];
 
 #if DEBUG
         NSLog(@"[SIMPLE DATA] Creating MOC %@ for thread %@ with OverwriteMergePolicy", managedObjectContext, [NSThread currentThread]);
