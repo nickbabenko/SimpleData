@@ -2,6 +2,9 @@
 build/*
 *.pbxuser
 *.mode1v3
+SimpleData.xcodeproj/xcuserdata/
+Test/google-toolbox-for-mac/GTM.xcodeproj/xcuserdata/
+Test/google-toolbox-for-mac/GTMiPhone.xcodeproj/xcuserdata/
 
 # old skool
 .svn
