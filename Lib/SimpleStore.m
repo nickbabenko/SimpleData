@@ -168,7 +168,7 @@ static SimpleStore *current = nil;
 //        [managedObjectContext setMergePolicy:NSOverwriteMergePolicy];
 
 #if DEBUG
-        NSLog(@"[SIMPLE DATA] Creating MOC %@ for thread %@ with OverwriteMergePolicy", managedObjectContext, [NSThread currentThread]);
+        NSLog(@"[SIMPLE DATA] Creating MOC %@ for thread %@ with NSMergeByPropertyStoreTrumpMergePolicy", managedObjectContext, [NSThread currentThread]);
 #endif
         
         // If this is not main thread's context, then we need to listen for chanages and merge those into the main thread's context
