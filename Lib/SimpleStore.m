@@ -62,7 +62,7 @@ static SimpleStore *current = nil;
         [current release];
         current = nil;
         current = [[SimpleStore alloc] initWithPath:[self storePath:p]];
-        current.managedObjectContext;
+        [current managedObjectContext];
         return current;
     }
 }
